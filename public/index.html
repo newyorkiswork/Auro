@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auro API Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div class="container mx-auto px-4 py-8">
+    <header class="mb-8">
+      <h1 class="text-3xl font-bold text-blue-600">Auro API Demo</h1>
+      <p class="text-gray-600">Test the mock API endpoints for the Auro demo</p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- GET Endpoints -->
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-semibold mb-4">GET Endpoints</h2>
+        <ul class="space-y-2">
+          <li><a href="/api/laundromats" class="text-blue-500 hover:underline" target="_blank">/api/laundromats</a></li>
+          <li><a href="/api/products" class="text-blue-500 hover:underline" target="_blank">/api/products</a></li>
+          <li><a href="/api/supplies" class="text-blue-500 hover:underline" target="_blank">/api/supplies</a></li>
+          <li><a href="/api/orders" class="text-blue-500 hover:underline" target="_blank">/api/orders</a></li>
+          <li><a href="/api/admin/tickets" class="text-blue-500 hover:underline" target="_blank">/api/admin/tickets</a></li>
+          <li><a href="/api/admin/users" class="text-blue-500 hover:underline" target="_blank">/api/admin/users</a></li>
+          <li><a href="/api/admin/system/status" class="text-blue-500 hover:underline" target="_blank">/api/admin/system/status</a></li>
+        </ul>
+      </div>
+
+      <!-- POST Endpoints -->
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-semibold mb-4">POST Endpoints</h2>
+        
+        <div class="mb-6">
+          <h3 class="font-medium mb-2">User Login</h3>
+          <button id="testLogin" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Test Login</button>
+          <pre id="loginResult" class="mt-2 bg-gray-100 p-2 rounded text-sm hidden"></pre>
+        </div>
+        
+        <div class="mb-6">
+          <h3 class="font-medium mb-2">Auro Interaction</h3>
+          <div class="flex gap-2 mb-2">
+            <input id="auroMessage" type="text" placeholder="Enter message" class="border p-2 rounded flex-1" value="Find me a washer">
+            <button id="testAuro" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Send</button>
+          </div>
+          <pre id="auroResult" class="mt-2 bg-gray-100 p-2 rounded text-sm hidden"></pre>
+        </div>
+        
+        <div>
+          <h3 class="font-medium mb-2">Admin Operator Command</h3>
+          <div class="flex gap-2 mb-2">
+            <input id="operatorCommand" type="text" placeholder="Enter command" class="border p-2 rounded flex-1" value="Show system status">
+            <button id="testOperator" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Send</button>
+          </div>
+          <pre id="operatorResult" class="mt-2 bg-gray-100 p-2 rounded text-sm hidden"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Test login
+    document.getElementById('testLogin').addEventListener('click', async () => {
+      const resultElement = document.getElementById('loginResult');
+      resultElement.classList.remove('hidden');
+      resultElement.textContent = 'Loading...';
+      
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: 'user@example.com', password: 'password123' })
+        });
+        const data = await response.json();
+        resultElement.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        resultElement.textContent = `Error: ${error.message}`;
+      }
+    });
+    
+    // Test Auro interaction
+    document.getElementById('testAuro').addEventListener('click', async () => {
+      const message = document.getElementById('auroMessage').value;
+      const resultElement = document.getElementById('auroResult');
+      resultElement.classList.remove('hidden');
+      resultElement.textContent = 'Loading...';
+      
+      try {
+        const response = await fetch('/api/auro/interact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message })
+        });
+        const data = await response.json();
+        resultElement.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        resultElement.textContent = `Error: ${error.message}`;
+      }
+    });
+    
+    // Test Operator command
+    document.getElementById('testOperator').addEventListener('click', async () => {
+      const command = document.getElementById('operatorCommand').value;
+      const resultElement = document.getElementById('operatorResult');
+      resultElement.classList.remove('hidden');
+      resultElement.textContent = 'Loading...';
+      
+      try {
+        const response = await fetch('/api/admin/operator/command', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ command })
+        });
+        const data = await response.json();
+        resultElement.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        resultElement.textContent = `Error: ${error.message}`;
+      }
+    });
+  </script>
+</body>
+</html>
